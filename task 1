@@ -1,0 +1,47 @@
+import os
+import shutil
+import argparse
+
+def copy_files_recursively(src_dir, dest_dir):
+    try:
+        for item in os.listdir(src_dir):
+            src_path = os.path.join(src_dir, item)
+            if os.path.isdir(src_path):
+                copy_files_recursively(src_path, dest_dir)
+            else:
+                # Get the file extension and create a corresponding subdirectory
+                file_extension = os.path.splitext(item)[1].lstrip('.').lower()
+                sub_dir = os.path.join(dest_dir, file_extension)
+
+                # Create the subdirectory if it doesn't exist
+                if not os.path.exists(sub_dir):
+                    os.makedirs(sub_dir)
+
+                # Copy the file to the corresponding subdirectory
+                dest_path = os.path.join(sub_dir, item)
+                shutil.copy2(src_path, dest_path)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+def main():
+    parser = argparse.ArgumentParser(description="Recursively copy and sort files by extension.")
+    parser.add_argument("source", help="Path to the source directory.")
+    parser.add_argument("destination", nargs='?', default="dist", help="Path to the destination directory (default: dist).")
+
+    args = parser.parse_args()
+
+    src_dir = args.source
+    dest_dir = args.destination
+
+    if not os.path.exists(src_dir):
+        print(f"Source directory '{src_dir}' does not exist.")
+        return
+
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+
+    copy_files_recursively(src_dir, dest_dir)
+    print("Files have been copied and sorted successfully.")
+
+if __name__ == "__main__":
+    main()

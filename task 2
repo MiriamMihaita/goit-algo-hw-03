@@ -1,0 +1,50 @@
+import turtle
+import argparse
+
+def draw_koch_segment(t, length, level):
+    if level == 0:
+        t.forward(length)
+    else:
+        length /= 3.0
+        draw_koch_segment(t, length, level-1)
+        t.left(60)
+        draw_koch_segment(t, length, level-1)
+        t.right(120)
+        draw_koch_segment(t, length, level-1)
+        t.left(60)
+        draw_koch_segment(t, length, level-1)
+
+def draw_koch_snowflake(t, length, level):
+    for _ in range(3):
+        draw_koch_segment(t, length, level)
+        t.right(120)
+
+def main():
+    parser = argparse.ArgumentParser(description="Draw a Koch snowflake fractal.")
+    parser.add_argument("level", type=int, help="The level of recursion for the Koch snowflake.")
+
+    args = parser.parse_args()
+
+    level = args.level
+
+    # Set up the turtle
+    screen = turtle.Screen()
+    screen.setup(width=800, height=800)
+
+    t = turtle.Turtle()
+    t.speed(0)
+    t.penup()
+    t.goto(-200, 100)
+    t.pendown()
+
+    length = 400  # Length of one side of the initial triangle
+
+    draw_koch_snowflake(t, length, level)
+
+    # Finish up
+    t.hideturtle()
+    screen.mainloop()
+
+if __name__ == "__main__":
+    main()
+    
